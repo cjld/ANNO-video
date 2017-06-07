@@ -7,7 +7,7 @@
 
 #include<windows.h>
 
-#include"bfc\type.h"
+#include "bfc/type.h"
 
 _FF_BEG
 

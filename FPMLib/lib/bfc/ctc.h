@@ -2,7 +2,7 @@
 #ifndef _FF_BFC_CTC_H
 #define _FF_BFC_CTC_H
 
-#include"bfc\fwd.h"
+#include "bfc/fwd.h"
 
 #include<limits>
 

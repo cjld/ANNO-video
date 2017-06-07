@@ -3,13 +3,13 @@
 #define _FF_BFC_FIO_H
 
 #include"ffdef.h"
-#include"bfc\bfstream.h"
+#include "bfc/bfstream.h"
 #include<string>
 #include<vector>
 
 _FF_BEG
 
-/*´ÅÅÌ½»»»ÎÄ¼þ
+/*ï¿½ï¿½ï¿½Ì½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
 */
 class _BFC_API DiskSwapFile
 {
@@ -73,13 +73,13 @@ public:
 
 	void  ListStreams(std::vector<std::wstring> &vname);
 
-	/*±£´æÊý¾ÝÇ°¶ÔÊý¾Ý½øÐÐ±ä»»£¨Ñ¹Ëõ£©
+	/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½Ý½ï¿½ï¿½Ð±ä»»ï¿½ï¿½Ñ¹ï¿½ï¿½ï¿½ï¿½
 
-	@dsize : ÊäÈë@destµÄ´óÐ¡£¬Êä³ö±ä»»ºóµÄÊý¾Ý´óÐ¡
+	@dsize : ï¿½ï¿½ï¿½ï¿½@destï¿½Ä´ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä»»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý´ï¿½Ð¡
 	
-	@dir   : >0 ÕýÏò£¨Ñ¹Ëõ£©£»<0 ÄæÏò£¨½âÑ¹£©
+	@dir   : >0 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½<0 ï¿½ï¿½ï¿½ò£¨½ï¿½Ñ¹ï¿½ï¿½
 
-	@RV    : >0 ³É¹¦£» =0 ÎÞ¶¯×÷£¬@destÎ´±»ÐÞ¸Ä£»¡¡<0 ´íÎó
+	@RV    : >0 ï¿½É¹ï¿½ï¿½ï¿½ =0 ï¿½Þ¶ï¿½ï¿½ï¿½ï¿½ï¿½@destÎ´ï¿½ï¿½ï¿½Þ¸Ä£ï¿½ï¿½ï¿½<0 ï¿½ï¿½ï¿½ï¿½
 	*/
 	virtual int TransformData(const void *src, size_t isize, void *dest, size_t &dsize, int dir);
 };

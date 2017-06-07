@@ -1,5 +1,5 @@
 
-#include"iff\util.h"
+#include "iff/util.h"
 
 #include<memory>
 #include<limits>
@@ -11,7 +11,7 @@
 
 #define _MACRO_ARG(arg) arg
 
-#include"bfc\cfg.h"
+#include "bfc/cfg.h"
 #include"bfc/vector.h"
 
 #undef min
@@ -758,7 +758,7 @@ void  fiuConvertRGBChannels(const void *pIn,const int width,const int height,con
 
 _FF_END
 
-#include"iff\resample.h"
+#include "iff/resample.h"
 
 _FF_BEG
 //================================================================================

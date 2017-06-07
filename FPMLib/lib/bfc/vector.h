@@ -4,7 +4,7 @@
 
 #include<math.h>
 
-#include"bfc\array.h"
+#include "bfc/array.h"
 
 _FF_BEG
 

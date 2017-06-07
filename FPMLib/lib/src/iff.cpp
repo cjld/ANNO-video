@@ -1,11 +1,11 @@
 
-#include"iff\iff.h"
+#include "iff/iff.h"
 
-#include"bfc\mem.h"
-#include"iff\util.h"
+#include "bfc/mem.h"
+#include "iff/util.h"
 
 
-#include"bfc\cfg.h"
+#include "bfc/cfg.h"
 
 _IFF_BEG
 
@@ -188,7 +188,7 @@ _IFF_END
 
 #if 0
 
-#include"iff\ioimpl.h"
+#include "iff/ioimpl.h"
 
 _IFF_BEG
 
@@ -204,7 +204,7 @@ void fiSaveImage(const char_t* file,const FVTImage& image)
 
 _IFF_END
 
-#include"bfc\winx.h"
+#include "bfc/winx.h"
 
 _IFF_BEG
 

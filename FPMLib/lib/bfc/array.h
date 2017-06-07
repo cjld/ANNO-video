@@ -2,8 +2,8 @@
 #ifndef _FF_BFC_ARRAY_H
 #define _FF_BFC_ARRAY_H
 
-#include"ffdef.h"
-#include"bfc\ctc.h"
+#include "ffdef.h"
+#include "bfc/ctc.h"
 
 //#define CTCAssert(...) 
 

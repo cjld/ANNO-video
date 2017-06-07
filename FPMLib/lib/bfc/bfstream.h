@@ -5,8 +5,8 @@
 #include<stdio.h>
 #include<string>
 
-#include"bfc\ctc.h"
-#include"bfc\err.h"
+#include "bfc/ctc.h"
+#include "bfc/err.h"
 
 _FF_BEG
 

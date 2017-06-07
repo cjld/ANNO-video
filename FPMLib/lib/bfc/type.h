@@ -3,10 +3,10 @@
 #define _FF_BFC_TYPE_H
 
 
-#include"bfc\fwd.h"
-#include"bfc\vector.h"
-#include"bfc/matrix.h"
-#include<stdlib.h>
+#include "bfc/fwd.h"
+#include "bfc/vector.h"
+#include "bfc/matrix.h"
+#include <stdlib.h>
 
 _FF_BEG
 

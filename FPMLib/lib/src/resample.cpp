@@ -1,10 +1,10 @@
 
 #include<assert.h>
 
-#include"iff\resample.h"
-#include"bfc\mem.h"
+#include "iff/resample.h"
+#include "bfc/mem.h"
 
-#include"bfc\cfg.h"
+#include "bfc/cfg.h"
 
 _FF_BEG
 

@@ -5,10 +5,10 @@
 #include<crtdbg.h>
 #include<string>
 
-#include"bfc\err.h"
-#include"bfc\mem.h"
+#include "bfc/err.h"
+#include "bfc/mem.h"
 
-#include"bfc\cfg.h"
+#include "bfc/cfg.h"
 
 _FF_BEG
 

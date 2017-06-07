@@ -1,5 +1,5 @@
 
-#include"bfc\mem.h"
+#include "bfc/mem.h"
 
 #include <stdlib.h>
 #include <crtdbg.h>
@@ -38,7 +38,7 @@ _FFS_API void __cdecl operator delete[](void* p, const char *file, int line,_ff_
 }
 
 
-#include"bfc\cfg.h"
+#include "bfc/cfg.h"
 
 
 _FF_BEG

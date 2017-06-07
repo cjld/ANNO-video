@@ -9,7 +9,7 @@
 
 const int _FIF_AUTO_RELEASE=0x01;
 
-#include"bfc\cfg.h"
+#include "bfc/cfg.h"
 
 
 _IFF_BEG
