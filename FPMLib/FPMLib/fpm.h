@@ -2,13 +2,15 @@
 #ifndef _INC_FPM_H
 #define _INC_FPM_H
 
-
+#if defined(_MSC_VER)
 #ifdef FPMLIB_EXPORT
 #define _FPM_API __declspec(dllexport)
 #else
 #define _FPM_API __declspec(dllimport)
 #endif
-
+#else
+#define _FPM_API
+#endif
 
 enum
 {
@@ -23,53 +25,53 @@ enum
 class _FPM_API  IFPM
 {
 protected:
-	
+
 	/*IFPM(const IFPM &);
 	IFPM& operator=(const IFPM &);*/
 
 public:
-	
+
 	IFPM();
 
 public:
 
 	//plan the searching process.
-	
+
 	//@iwidth,@iheight: image size
-	
+
 	//@pwidth,@pheight: pattern size
-	
+
 	//@dim : the dimension of each element, typically, the channel number of image and pattern.
-	
+
 	//@flag: (FPMF_WEIGHTED)
-	
+
 	//@sel : a value to specify what and how many patches can be found.
-	
+
 	virtual void Plan(int iwidth, int iheight, /*int pwidth, int pheight, */int dim, int flag, double sel)=0;
 
 	//set source image and search locations.
-	
+
 	//@img, @istep, @itype : the image data, step and data type, the data type can be any of FPMT_*
-	
+
 	//@mask, @mstep : mask of the search location, if @mask is NULL, all locations would be searched. Note that
-	//				  the boundary elements with x>@iwidth-@pwidth or y>@iheight-@pheight would never be searched 
+	//				  the boundary elements with x>@iwidth-@pwidth or y>@iheight-@pheight would never be searched
 	//				  regardless their mask.
-	
+
 	virtual void SetImage(const void *img, int istep, int itype, const unsigned char *mask, int mstep) =0 ;
 
 	//search a pattern in the pre-set image.
-	
+
 	//@pat,@pstep,@ptype : the pattern data, step and type.
-	
+
 	//@weight			 : the weight for each element in @pat. if it is planned to be weighted, @weight should not be null, else
 	//						it would be ignored.
-	
+
 	//@pmatch            : output the indices of the matched locations. The related coordinates can be computed from an index i as (i%iwidth,i/iwidth)
-	
+
 	//@pssd				 : the SSD match error of each match location, it can be NULL.
-	
+
 	//@nmax				 : max matches to search.
-	
+
 	//@flag				 : FPMF_TRUE_SSD => output true SSD, otherwise the SSD in @pssd may be different from its true value with a constant offset.
 
 	//return value : the number of matches be found.
@@ -95,9 +97,9 @@ public:
 	virtual ~FPMNaive();
 
 	//get the SSD of all elements.
-	
+
 	//@pat,@pstep,@ptype,@weight is the same to those in @Match(...)
-	
+
 	//@pdelta : the constant offset of the result SSD to its true value, it can be NULL if not necessary.
 
 	virtual const double* GetSSD(const void *pat, int pwidth, int pheight, int pstep, int ptype, const double *weight,double *pdelta);
@@ -155,7 +157,7 @@ public:
 
 //@mval : mask value for valid pixels, which should not be zero.
 
-void FPMMakePatMask(int iwidth, int iheight, int pwidth, int pheight, const unsigned char *pPixelMask, int xmstep, 
+void FPMMakePatMask(int iwidth, int iheight, int pwidth, int pheight, const unsigned char *pPixelMask, int xmstep,
 					unsigned char *pPatMask, int pmstep,
 					unsigned char mval =1
 					);
@@ -166,4 +168,3 @@ void FPMMakePatMask(int iwidth, int iheight, int pwidth, int pheight, const unsi
 
 
 #endif
-

@@ -1,11 +1,11 @@
 QT -= core
 QT -= gui
 
-CONFIG += c++11
-
 TARGET = FPMLib
 CONFIG += console
 CONFIG -= app_bundle
+
+QMAKE_CXXFLAGS += -std=c++11
 
 TEMPLATE = lib
 
@@ -59,5 +59,6 @@ HEADERS += \
     lib/ffdef.h
 
 INCLUDEPATH += ./lib ../fftw-3.3.5-dll64
-LIBS += -L../fftw-3.3.5-dll64 -llibfftw3f-3 -llibfftw3-3
+win32:LIBS += -L../fftw-3.3.5-dll64 -llibfftw3f-3 -llibfftw3-3
+linux:LIBS += -L/usr/lib/x86_64-linux-gnu/ -lfftw3f -lfftw3
 DEFINES += _IFF_STATIC _FFS_STATIC FPMLIB_EXPORT

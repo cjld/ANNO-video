@@ -28,7 +28,7 @@ public:
 
 	const char* GetMessage() const;
 
-	virtual const char *what( ) const;
+	virtual const char *what( ) const noexcept(true);
 
 protected:
 	const char *m_err, *m_msg;
@@ -94,7 +94,7 @@ inline _ValT& _ff_verify_func(_ValT &val, const char *statement, const char* fil
 {
 	if(!val)
 		_FF_HandleError(ERROR_CLASS_EXCEPTION,ERR_ASSERT_FAILED,statement,file,line);
-	
+
 	return val;
 }
 
@@ -104,7 +104,7 @@ inline _ValT* _ff_verify_func(_ValT *ptr, const char *statement, const char* fil
 {
 	if(!ptr)
 		_FF_HandleError(ERROR_CLASS_EXCEPTION,ERR_ASSERT_FAILED,statement,file,line);
-	
+
 	return ptr;
 }
 
@@ -120,4 +120,3 @@ inline _ValT* _ff_verify_func(_ValT *ptr, const char *statement, const char* fil
 #endif
 
 #endif
-

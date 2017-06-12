@@ -108,7 +108,7 @@ public:
 			(*this)[i]-=right[i];
 		return *this;
 	}
-	//v*=s. 
+	//v*=s.
 	template<typename _FactT>
 	_MyT& operator*=(_FactT fact)
 	{
@@ -148,13 +148,13 @@ public:
 	//whether the vector is unit.
 	bool  IsUnit(double tor=1e-6) const
 	{
-		return fvt::IsZero((*this)*(*this)-1,tor);
+		return IsZero((*this)*(*this)-1,tor);
 	}
 	//whether the vector is zero.
 	bool IsZero(double tor=1e-6) const
 	{
 		for(int i=0;i<size;++i)
-			if(!fvt::IsZero((*this)[i],tor))
+			if(!IsZero((*this)[i],tor))
 				return false;
 		return true;
 	}
@@ -162,35 +162,35 @@ public:
 
 //v=v1+v2.
 template<typename _ValT,int sz>
-inline Vector<_ValT,sz> 
+inline Vector<_ValT,sz>
 operator+(Vector<_ValT,sz> left,const Vector<_ValT,sz>& right)
 {
 	return left+=right;
 }
 //v=v1-v2
 template<typename _ValT,int sz>
-inline Vector<_ValT,sz> 
+inline Vector<_ValT,sz>
 operator-(Vector<_ValT,sz> left,const Vector<_ValT,sz>& right)
 {
 	return left-=right;
 }
 //v=v*s
 template<typename _ValT,int sz,typename _FactT>
-inline Vector<_ValT,sz> 
+inline Vector<_ValT,sz>
 operator*(Vector<_ValT,sz> left,_FactT fact)
 {
 	return left*=fact;
 }
 //v=s*v;
 template<typename _ValT,int sz,typename _FactT>
-inline Vector<_ValT,sz> 
+inline Vector<_ValT,sz>
 operator*(_FactT fact,Vector<_ValT,sz> right)
 {
 	return right*=fact;
 }
 //v=v/s;
 template<typename _ValT,int sz,typename _FactT>
-inline Vector<_ValT,sz> 
+inline Vector<_ValT,sz>
 operator/(Vector<_ValT,sz> left,_FactT fact)
 {
 	return left/=fact;
@@ -337,7 +337,7 @@ inline void ArrNormalize(_AT *pArr,int dim)
 template<typename _AT>
 inline void ArrZero(_AT *pArr,int dim)
 {
-	memset(pOut,sizeof(_AT)*dim);
+	memset(pArr,sizeof(_AT)*dim);
 }
 template<typename _AT>
 inline bool ArrIsZero(const _AT *pArr,int dim,const double torr=1e-6)
@@ -361,4 +361,3 @@ _FF_END
 
 
 #endif
-

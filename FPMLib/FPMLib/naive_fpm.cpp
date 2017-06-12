@@ -7,12 +7,12 @@
 
 template<typename _DataT,typename _DestT>
 void calc_ssd(const _DataT *pImg, int iw, int ih, int istep, const uchar *pMask, int mstep,
-			  const _DataT *pPat, int pw, int ph, 
-			  const int dim, 
+			  const _DataT *pPat, int pw, int ph,
+			  const int dim,
 			  _DestT *pSSD
 			  )
 {
-	typedef ff::DiffType<_DataT>::RType _DiffT;
+	typedef typename ff::DiffType<_DataT>::RType _DiffT;
 
 	int nex=pw*dim;
 
@@ -27,7 +27,7 @@ void calc_ssd(const _DataT *pImg, int iw, int ih, int istep, const uchar *pMask,
 			{
 				const _DataT *pixx=pix,*ppx=pPat;
 				_DestT s=0;
-				
+
 				for(int i=0;i<ph;++i,pixx=ByteDiff(pixx,istep))
 				{
 					for(int j=0;j<nex;++j,++ppx)
@@ -47,11 +47,11 @@ void calc_ssd(const _DataT *pImg, int iw, int ih, int istep, const uchar *pMask,
 template<typename _DataT,typename _DestT,typename _WeiT>
 void calc_wssd(const _DataT *pImg, int iw, int ih, int istep, const uchar *pMask, int mstep,
 			  const _DataT *pPat, int pw, int ph, const _WeiT *pWei,
-			  const int dim, 
+			  const int dim,
 			  _DestT *pSSD
 			  )
 {
-	typedef ff::DiffType<_DataT>::RType _DiffT;
+	typedef typename ff::DiffType<_DataT>::RType _DiffT;
 
 	int nex=pw*dim;
 
@@ -67,7 +67,7 @@ void calc_wssd(const _DataT *pImg, int iw, int ih, int istep, const uchar *pMask
 				const _DataT *pixx=pix,*ppx=pPat;
 				const _WeiT  *pwx=pWei;
 				_DestT s=0;
-				
+
 				for(int i=0;i<ph;++i,pixx=ByteDiff(pixx,istep))
 				{
 					for(int j=0;j<nex;++j,++ppx,++pwx)
@@ -89,7 +89,7 @@ void calc_wssd(const _DataT *pImg, int iw, int ih, int istep, const uchar *pMask
 template<typename _DataT>
 void ssd(const void *pImg, int iw, int ih, int istep, const uchar *pMask, int mstep,
 			  const void *pPat, int pw, int ph, const double *pWei,
-			  const int dim, 
+			  const int dim,
 			  double *pSSD
 			  )
 {
@@ -105,17 +105,17 @@ void ssd(const void *pImg, int iw, int ih, int istep, const uchar *pMask, int ms
 
 typedef void (*FuncT)(const void *pImg, int iw, int ih, int istep, const uchar *pMask, int mstep,
 			  const void *pPat, int pw, int ph, const double *pWei,
-			  const int dim, 
+			  const int dim,
 			  double *pSSD
 			  );
 
 const static FuncT g_ssdFunc[]=
 {
 	ssd<uchar>,ssd<int>,ssd<float>,ssd<double>
-}; 
+};
 
 #if 1
-			  
+
 
 class FPMNaive::_CImp
 {
@@ -159,7 +159,9 @@ public:
 
 			uchar mv=0;
 			m_mask=m_mask0;
-			for_boundary_pixel_0_1(FI_AL_DWHSP(m_mask),bind_i0(&mv,iop_copy<1>()),0,pheight,0,pwidth);
+			iop_copy<1> tmp(0);
+			auto tmp2 = bind_i0(&mv,tmp);
+			for_boundary_pixel_0_1(FI_AL_DWHSP(m_mask),tmp2,0,pheight,0,pwidth);
 
 			m_vw.resize(m_pw*m_ph*m_dim);
 		}
@@ -183,7 +185,7 @@ public:
 
 		if(pdelta)
 			*pdelta=0;
-	
+
 		return &m_ssd[0];
 	}
 
@@ -249,4 +251,3 @@ int FPMNaive::Match(const void *pat, int pwidth, int pheight, int pstep, int pty
 }
 
 #endif
-

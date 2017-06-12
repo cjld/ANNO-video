@@ -30,7 +30,7 @@ If @file is a file name, the return value is the father directory of its directo
 NOTE: a directory should always end with backslash("\").
 */
 string_t _BFC_API GetFatherDirectory(const string_t& file);
-  
+
 /*
 Get the name of a file (along with extension) or directory,
 @bExt : whether to preserve the file extention.
@@ -215,51 +215,6 @@ inline _DestT* VecMemAs(_VectorT &vec,int pos=0)
 	return (_DestT*)(VecMem(vec,pos));
 }
 
-namespace charset
-{
-	enum
-	{
-		THREAD_ACP=3,
-		ACP=0,
-		UTF8=65001,
-		UTF7=65000
-	};
-
-	//_BFC_API void SetCodePage(int cp);
-
-	_BFC_API std::string& WCS2MBS(const wchar_t *wcs, std::string &acs, int code_page=THREAD_ACP);
-
-	_BFC_API std::wstring&  MBS2WCS(const char *acs, std::wstring &wcs, int code_page=THREAD_ACP);
-
-	inline const std::wstring& _2WCS(const std::wstring &wcs, int _=0, int __=0, std::wstring &_buf=std::wstring())
-	{
-		return wcs;
-	}
-	inline const std::wstring& _2WCS(const std::string &mbs, int i_code_page=THREAD_ACP, int _=0, std::wstring &_buf=std::wstring())
-	{
-		return MBS2WCS(mbs.c_str(), _buf, i_code_page);
-	}
-
-	inline const std::string& _2MBS(const std::wstring &wcs, int _=0, int d_code_page=THREAD_ACP, std::string &_buf=std::string())
-	{
-		return WCS2MBS(wcs.c_str(),_buf, d_code_page);
-	}
-	inline const std::string& _2MBS(const std::string &mbs, int i_code_page=THREAD_ACP, int d_code_page=THREAD_ACP, std::string &_buf=std::string())
-	{
-		return i_code_page==d_code_page? mbs : _2MBS(_2WCS(mbs,i_code_page),0,d_code_page,_buf);
-	}
-
-	template<typename _IStrT>
-	inline const string_t& _2TS(const _IStrT &str, int i_code_page=THREAD_ACP, int d_code_page=THREAD_ACP, string_t &_buf=string_t())
-	{
-#ifdef _UNICODE
-		return _2WCS(str,i_code_page,d_code_page,_buf);
-#else
-		return _2MBS(str,i_code_page, d_code_page, _buf);
-#endif
-	}
-	
-}
 
 
 //=================================================================================
@@ -276,5 +231,3 @@ namespace charset
 _FF_END
 
 #endif
-
-

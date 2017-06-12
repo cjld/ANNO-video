@@ -2,14 +2,16 @@
 #include "bfc/mem.h"
 
 #include <stdlib.h>
-#include <crtdbg.h>
+//#include <crtdbg.h>
 #include <malloc.h>
 #include <exception>
 #include <new>
-#include <windows.h>
+//#include <windows.h>
 #include <assert.h>
-
-_FFS_API void* __cdecl operator new(size_t size, const char* file, int line,_ff_debug_new *)
+#include <cstring>
+#include <wchar.h>
+/*
+_FFS_API void* m__cdecl operator new(size_t size, const char* file, int line,_ff_debug_new *)
 {
 	void *pbuf=_malloc_dbg(size,_NORMAL_BLOCK,file,line);
 	if(!pbuf)
@@ -18,7 +20,7 @@ _FFS_API void* __cdecl operator new(size_t size, const char* file, int line,_ff_
 	return pbuf;
 }
 
-_FFS_API void* __cdecl operator new[](size_t size, const char* file, int line,_ff_debug_new *)
+_FFS_API void* m__cdecl operator new[](size_t size, const char* file, int line,_ff_debug_new *)
 {
 	void *pbuf=operator new(size,file,line,NULL);
 	if(!pbuf)
@@ -27,16 +29,16 @@ _FFS_API void* __cdecl operator new[](size_t size, const char* file, int line,_f
 	return pbuf;
 }
 
-_FFS_API void __cdecl operator delete(void* p, const char *file, int line,_ff_debug_new *)
+_FFS_API void m__cdecl operator delete(void* p, const char *file, int line,_ff_debug_new *)
 {
 	_free_dbg(p,_NORMAL_BLOCK);
 }
 
-_FFS_API void __cdecl operator delete[](void* p, const char *file, int line,_ff_debug_new *)
+_FFS_API void m__cdecl operator delete[](void* p, const char *file, int line,_ff_debug_new *)
 {
 	operator delete(p,file,line,NULL);
 }
-
+*/
 
 #include "bfc/cfg.h"
 
@@ -75,7 +77,7 @@ _FFS_API void* ff_galloc(size_t size)
 		if(g_gm_count>=g_gm_size)
 		{
 			void **gm_list=new void*[g_gm_size+100];
-			
+
 			memcpy(gm_list,g_gm_list,sizeof(void*)*g_gm_count);
 			g_gm_size+=100;
 
@@ -120,7 +122,7 @@ static void  _gfree_memory()
 	{
 		ff_free(g_gm_list[i]);
 	}
-	
+
 	delete[]g_gm_list;
 	g_gm_list=NULL;
 
@@ -218,7 +220,7 @@ ff_mem::~ff_mem()
 _FFS_API char* ff_w2a(const wchar_t *wcs, ff_mem &mem)
 {
 	char *ds=NULL;
-
+/*
 	if(wcs)
 	{
 		int len=(int)wcslen(wcs)+1;
@@ -232,6 +234,7 @@ _FFS_API char* ff_w2a(const wchar_t *wcs, ff_mem &mem)
 			ds=NULL;
 		}
 	}
+*/
 	mem.set_mem(ds);
 
 	return ds;
@@ -240,7 +243,7 @@ _FFS_API char* ff_w2a(const wchar_t *wcs, ff_mem &mem)
 _FFS_API wchar_t* ff_a2w(const char *acs, ff_mem &mem)
 {
 	wchar_t *ds=NULL;
-
+/*
 	if(acs)
 	{
 		int len=(int)strlen(acs)+1;
@@ -254,10 +257,10 @@ _FFS_API wchar_t* ff_a2w(const char *acs, ff_mem &mem)
 			ds=NULL;
 		}
 	}
+*/
 	mem.set_mem(ds);
 
 	return ds;
 }
 
 _FF_END
-

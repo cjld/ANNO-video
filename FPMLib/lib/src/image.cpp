@@ -4,8 +4,8 @@
 #undef max
 #undef min
 
-#include "iff\image.h"
-#include "iff\iff.h"
+#include "iff/image.h"
+#include "iff/iff.h"
 
 const int _FIF_AUTO_RELEASE=0x01;
 
@@ -75,7 +75,7 @@ void FVTImage::Swap(FVTImage &right)
 void FVTImage::Reshape(int newType, int newWidth)
 {
 	FI_ASSERT_TYPE(newType);
-	
+
 	int lsz=this->LineSize(),nlsz=0,ntsz=FI_TYPE_SIZE(newType);
 
 	if(newWidth<=0)
@@ -145,7 +145,7 @@ void FVTImage::AttachROI(const FVTImage &img, const Rect &roi)
 		Rect roix(OverlappedRect(roi,Rect(0,0,img.Width(),img.Height())));
 
 		if(roix.IsEmpty())
-			this->Clear(); //clear if ROI is empty.           
+			this->Clear(); //clear if ROI is empty.
 		else
 			this->Attach((void*)img.DataAs<uchar>(roix.X(),roix.Y()),roix.Width(),roix.Height(),img.Type(),img.Step());
 	}
@@ -163,4 +163,3 @@ void FVTImage::AttachROI(const FVTImage &img, const Rect &roi)
 
 
 _FF_END
-

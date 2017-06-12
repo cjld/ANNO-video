@@ -16,6 +16,7 @@
 
 #undef min
 #undef max
+#include <cstring>
 
 _IFF_BEG
 
@@ -35,7 +36,7 @@ static void fiiFillBits(void *pPixel,const int count,const double value)
 void   fiuFillBits(void *pDest,int depth,int count,double value)
 {
 	typedef void (*_FuncT)(void *pPixel,const int cn,const double value);
-	
+
 	static const _FuncT _pFuncTab[]=
 	{
 		FI_DEPTH_FUNC_LIST(fiiFillBits)
@@ -170,7 +171,7 @@ void   fiuSetBoundary(void *pOut,const int rowSize,const int height,const int st
 		int yi=0;
 		for(;yi<nTopLines;++yi,pox+=step)
 			memset(pox,val,rowSize);
-		
+
 		for(;yi<height-nBottomLines;++yi,pox+=step)
 		{
 			//left
@@ -178,7 +179,7 @@ void   fiuSetBoundary(void *pOut,const int rowSize,const int height,const int st
 			//right
 			memset(pox+rowSize-nRightBytes,val,nRightBytes);
 		}
-		//bottom	
+		//bottom
 		for(;yi<height;++yi,pox+=step)
 			memset(pox,val,rowSize);
 	}
@@ -258,7 +259,7 @@ void    fiuSetBoundaryPixel(void *pOut,const int width,const int height,const in
 	if(pOut)
 	{
 		uchar *pox=(uchar*)pOut;
-		
+
 		if(nTopLines>0)
 			fiuSetPixel(pox,width,nTopLines,step,ps,pval,cps);
 		if(nBottomLines>0)
@@ -465,7 +466,7 @@ static void _fiuiCallScaleDepth(const uchar* pi,const int width,const int height
 {
 	typedef void (*_FuncT)(const uchar* pi,const int width,const int height,const int istep,const int cn,
 		uchar* po,const int ostep,double scale,double shift);
-	
+
 #define _PRE_FIX &_fiuiScaleDepth<_SrcT,
 
 	static _FuncT _pFuncTab[]=
@@ -506,7 +507,7 @@ static void _fiuiSwapChannels(void *pImg,const int width,const int height,const 
 {
 	assert(uint(ic0)<uint(cn)&&uint(ic1)<uint(cn));
 
-	const int ib=__min(ic0,ic1),id=(__max(ic0,ic1)-ib)*cw;
+	const int ib=std::min(ic0,ic1),id=(std::max(ic0,ic1)-ib)*cw;
 	if(id>0)
 	{
 		const int pw=cw*cn;
@@ -530,7 +531,7 @@ void   fiuSwapChannels(void *pImg,const int width,const int height,const int ste
 {
 	typedef void (*_FuncT)(void *pImg,const int width,const int height,const int step,
 							  const int cn,const int ic0,const int ic1);
-	
+
 	static _FuncT _pFuncTab[]={_fiuiSwapChannels<1>,_fiuiSwapChannels<2>,0,_fiuiSwapChannels<4>,
 								0,0,0,_fiuiSwapChannels<8>};
 
@@ -559,7 +560,7 @@ static void _fiuiColorToGrayAverage(const uchar* pi,const int width,const int he
 	{
 		const _Ty* pix=(_Ty*)pi;
 		_Ty* pox=(_Ty*)po;
-		typedef FI_ACCUM_TYPE<_Ty>::type _AccumT;
+		typedef typename FI_ACCUM_TYPE<_Ty>::type _AccumT;
 		for(int xi=0;xi<width;++xi,pix+=cn,++pox)
 			*pox=_Ty((_AccumT(pix[0])+pix[1]+pix[2])/3);
 	}
@@ -589,7 +590,7 @@ static void _fiuiColorToGrayWeight(const uchar* pi,const int width,const int hei
 	{
 		const _Ty* pix=(_Ty*)pi;
 		_Ty* pox=(_Ty*)po;
-		typedef FI_ACCUM_TYPE<_Ty>::type _AccumT;
+		typedef typename FI_ACCUM_TYPE<_Ty>::type _AccumT;
 		for(int xi=0;xi<width;++xi,pix+=cn,++pox)
 			*pox=_Ty(pix[0]*w0+pix[1]*w1+pix[2]*w2);
 	}
@@ -625,14 +626,14 @@ void _fiuiGrayToColor(const void* pGray,const int width,const int height,const i
 					void* pColor,const int ostep,const int ocn,const void* pAlpha)
 {
 	assert((icn==1||icn==2)&&ocn>=2&&ocn<=4);
-	
+
 	uchar *pi=(uchar*)pGray,*po=(uchar*)pColor;
 	const int ipw=cw*icn;
-	
+
 	for(int yi=0;yi<height;++yi,pi+=istep,po+=ostep)
 	{
 		uchar* pix=pi,*pox=po;
-		
+
 		if(pAlpha)
 		{
 			for(int xi=0;xi<width;++xi,pix+=ipw,pox+=cw)
@@ -691,7 +692,7 @@ void  fiuCopyChannels(const void* pSrc,const int width,const int height,const in
 {
 #ifdef _DEBUG
 	const uint icn=FI_CN(type);
-	
+
 	assert(uint(icBeg)<icn&&uint(icEnd)<=icn&&icBeg<icEnd);
 	assert(uint(ocBeg)<uint(ocn)&&uint(ocBeg+icEnd-icBeg)<=uint(ocn));
 #endif
@@ -699,7 +700,7 @@ void  fiuCopyChannels(const void* pSrc,const int width,const int height,const in
 	if(pSrc&&pDest)
 	{
 		const int ipw=FI_PIXEL_SIZE(type),cw=FI_DEPTH_SIZE(FI_DEPTH(type)),opw=ocn*cw;
-	
+
 		fiuCopyPixel((uchar*)pSrc+cw*icBeg,width,height,istep,ipw,(uchar*)pDest+ocBeg*cw,
 			ostep,opw,(icEnd-icBeg)*cw);
 	}
@@ -806,7 +807,7 @@ static void _resize_2(uchar *dest, int dwidth, int dheight, int dstep, int cn, c
 
 	static _FUNCT fp[]=
 	{
-		&_resize_3<_Shift,1,_ValT,_RST,_TValT>, &_resize_3<_Shift,2,_ValT,_RST,_TValT>, &_resize_3<_Shift,3,_ValT,_RST,_TValT>, &_resize_3<_Shift,4,_ValT,_RST,_TValT> 
+		&_resize_3<_Shift,1,_ValT,_RST,_TValT>, &_resize_3<_Shift,2,_ValT,_RST,_TValT>, &_resize_3<_Shift,3,_ValT,_RST,_TValT>, &_resize_3<_Shift,4,_ValT,_RST,_TValT>
 	};
 
 	(fp[cn-1])(dest,dwidth,dheight,dstep,xt,yt,rs);
@@ -819,11 +820,11 @@ static void _resize_1(uchar *dest, int dwidth, int dheight, int dstep, int type,
 
 	static _FUNCT fp[]=
 	{
-		&_resize_2<_Shift,char,_RST,_TValT>, 
-		&_resize_2<_Shift,uchar,_RST,_TValT>, 
-		&_resize_2<_Shift,short,_RST,_TValT>, 
+		&_resize_2<_Shift,char,_RST,_TValT>,
+		&_resize_2<_Shift,uchar,_RST,_TValT>,
+		&_resize_2<_Shift,short,_RST,_TValT>,
 		&_resize_2<_Shift,ushort,_RST,_TValT>,
-		&_resize_2<_Shift,int,_RST,_TValT>, 
+		&_resize_2<_Shift,int,_RST,_TValT>,
 		NULL
 	};
 
@@ -856,6 +857,8 @@ static void _resize_0(const void *src, int width, int height, int istep, int typ
 	_resize_1<_Shift>(dest,dwidth,dheight,dstep,type,xt,yt,rs,(_NNR*)NULL);
 }
 
+const int _RESIZE_SHIFT=10;
+
 template<int _Shift, typename _NNR,typename _BLR, typename _CUBR, typename _TValT>
 static void _resize(const void *src, int width, int height, int istep, int type, uchar *dest, int dwidth, int dheight, int dstep, int resampleMethod)
 {
@@ -880,8 +883,6 @@ static void _resize(const void *src, int width, int height, int istep, int type,
 	delete[]xt;
 	delete[]yt;
 }
-
-const int _RESIZE_SHIFT=10;
 
 void _IFF_API fiuResize(const void *src, int width, int height, int istep, int type, void *dest, int dwidth, int dheight, int dstep, int resampleMethod)
 {
@@ -910,7 +911,7 @@ static int fiuiMergeEqClass(const std::vector<Vector<int,2> > &veq,int nc,std::v
 	for(size_t i=0;i<veq.size();++i)
 	{
 		const Vector<int,2> &e(veq[i]);
-		
+
 		vmap[e[0]].push_back(e[1]);
 		vmap[e[1]].push_back(e[0]);
 	}
@@ -999,17 +1000,17 @@ static int fiuiConnectedComponent(const uchar *pSrc,const int width,const int he
 			{
 				int id0=-1;
 
-				if(xi>0) 
+				if(xi>0)
 				{
 					_CHK_POS(-1,0) ;
-					
+
 					if(bC8&&yi>0)
 						_CHK_POS(-1,-1);
 				}
 				if(yi>0)
 				{
 					_CHK_POS(0,-1);
-					
+
 					if(bC8&&xi<width-1)
 						_CHK_POS(1,-1);
 				}
@@ -1024,7 +1025,7 @@ static int fiuiConnectedComponent(const uchar *pSrc,const int width,const int he
 	std::vector<int> remap;
 	id=fiuiMergeEqClass(veq,id+1,remap);
 	pCC-=height*ostep;
-	
+
 	for(int yi=0;yi<height;++yi,pCC+=ostep)
 	{
 		_DepthValT *pcx=(_DepthValT*)pCC;
@@ -1072,6 +1073,3 @@ int  fiuConnectedComponent(const uchar *pSrc,const int width,const int height,co
 
 
 _IFF_END
-
-
-

@@ -1,5 +1,9 @@
 #include "videoCutout.h"
 
+using cv::xfeatures2d::SurfFeatureDetector;
+using cv::xfeatures2d::SurfDescriptorExtractor;
+
+
 videoCutout::videoCutout(void)
 {
 }
@@ -28,10 +32,10 @@ void mouseCall5(int event, int x, int y, int flags, void *param){
 void drawArrow2(cv::Mat& img, cv::Point pStart, cv::Point pEnd, int len, int alpha, cv::Scalar& color, int thickness, int lineType)
 {
 	Point arrow;
-	//¼ÆËã ¦È ½Ç£¨×î¼òµ¥µÄÒ»ÖÖÇé¿öÔÚÏÂÃæÍ¼Ê¾ÖÐÒÑ¾­Õ¹Ê¾£¬¹Ø¼üÔÚÓÚ atan2 º¯Êý£¬ÏêÇé¼ûÏÂÃæ£©   
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ç£ï¿½ï¿½ï¿½ï¿½òµ¥µï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼Ê¾ï¿½ï¿½ï¿½Ñ¾ï¿½Õ¹Ê¾ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½ atan2 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ£©
 	double angle = atan2((double)(pStart.y - pEnd.y), (double)(pStart.x - pEnd.x));
 	line(img, pStart, pEnd, color, thickness, lineType);
-	//¼ÆËã¼ý½Ç±ßµÄÁíÒ»¶ËµÄ¶ËµãÎ»ÖÃ£¨ÉÏÃæµÄ»¹ÊÇÏÂÃæµÄÒª¿´¼ýÍ·µÄÖ¸Ïò£¬Ò²¾ÍÊÇpStartºÍpEndµÄÎ»ÖÃ£© 
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç±ßµï¿½ï¿½ï¿½Ò»ï¿½ËµÄ¶Ëµï¿½Î»ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½Í·ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½Ò²ï¿½ï¿½ï¿½ï¿½pStartï¿½ï¿½pEndï¿½ï¿½Î»ï¿½Ã£ï¿½
 	arrow.x = pEnd.x + len * cos(angle + PI * alpha / 180);
 	arrow.y = pEnd.y + len * sin(angle + PI * alpha / 180);
 	line(img, pEnd, arrow, color, thickness, lineType);
@@ -430,13 +434,13 @@ void videoCutout::ComputeEgFeature(float &angle, float x_off, float y_off, int x
 	// 	int circleRadius=point_dis;
 	// 	Rect rectA= Rect(pt_a.x-circleRadius, pt_a.y-circleRadius, circleRadius*2+1, circleRadius*2+1);
 	// 	Rect rectB= Rect(pt_b.x-circleRadius, pt_b.y-circleRadius, circleRadius*2+1, circleRadius*2+1);
-	// 
+	//
 	//  	Mat circleMaskA(Size(circleRadius*2+1, circleRadius*2+1), CV_8U, Scalar(0)), circleMaskB(Size(circleRadius*2+1, circleRadius*2+1), CV_8U, Scalar(0));
 	//  	Point pt1=Point(circleRadius+circleRadius*2*cos(angle+PI/2), circleRadius+circleRadius*2*sin(angle+PI/2));
 	//  	Point pt2=Point(circleRadius+circleRadius*2*cos(angle-PI/2), circleRadius+circleRadius*2*sin(angle-PI/2));
 	//  	clipLine(Size(circleRadius*2+1, circleRadius*2+1), pt1, pt2);
-	//  	line(circleMaskA, pt1, Point(circleRadius,circleRadius), Scalar(50)); line(circleMaskA, pt2, Point(circleRadius,circleRadius), Scalar(50)); 
-	//  	line(circleMaskB, pt1, Point(circleRadius,circleRadius), Scalar(50)); line(circleMaskB, pt2, Point(circleRadius,circleRadius), Scalar(50)); 
+	//  	line(circleMaskA, pt1, Point(circleRadius,circleRadius), Scalar(50)); line(circleMaskA, pt2, Point(circleRadius,circleRadius), Scalar(50));
+	//  	line(circleMaskB, pt1, Point(circleRadius,circleRadius), Scalar(50)); line(circleMaskB, pt2, Point(circleRadius,circleRadius), Scalar(50));
 	//  	circle(circleMaskA,Point(circleRadius,circleRadius),circleRadius,Scalar(100)); circle(circleMaskB,Point(circleRadius,circleRadius),circleRadius,Scalar(100));
 	//  	Point ptA=Point(circleRadius+circleRadius*cos(angle)/2, circleRadius+circleRadius*sin(angle)/2);
 	//  	Point ptB=Point(circleRadius+circleRadius*cos(angle+PI)/2, circleRadius+circleRadius*sin(angle+PI)/2);
@@ -456,7 +460,7 @@ void videoCutout::ComputeEgFeature(float &angle, float x_off, float y_off, int x
 	//  	// 	imshow("circleMaskA1",circleMaskA1);
 	//  	// 	imshow("circleMaskB1",circleMaskB1);
 	//  	// 	waitKey();
-	//  
+	//
 	//  	Vec3i ScalarIA(0,0,0), ScalarIB(0,0,0);
 	//  	int numA=0, numB=0;
 	//  	for (int y=0; y<rectA.height; y++)
@@ -687,7 +691,7 @@ void videoCutout::imageDeform(Mat &ori_mask, Mat &tar_mask, vector<Point2f> &src
 	// 	imgTrans = new ImgWarp_MLS_Similarity();
 	imgTrans = new ImgWarp_MLS_Rigid();
 	// 	imgTrans = new ImgWarp_PieceWiseAffine();
-	// 	((ImgWarp_PieceWiseAffine *)imgTrans)->backGroundFillAlg = ImgWarp_PieceWiseAffine::BGML	
+	// 	((ImgWarp_PieceWiseAffine *)imgTrans)->backGroundFillAlg = ImgWarp_PieceWiseAffine::BGML
 
 	imgTrans->alpha = 1;
 	imgTrans->gridSize = 10;
@@ -917,9 +921,9 @@ void videoCutout::classifyTargetEdges(Mat &tar_edge, Mat &tar_edge_result, Mat &
 		}
 	}
 	// 	float maxFloat= numeric_limits<float>::max();
-	// 	m_distsFGA.setTo(maxFloat); m_distsFGB.setTo(maxFloat); 
+	// 	m_distsFGA.setTo(maxFloat); m_distsFGB.setTo(maxFloat);
 
-	// 	m_distsBGA.setTo(maxFloat); m_distsBGB.setTo(maxFloat); 
+	// 	m_distsBGA.setTo(maxFloat); m_distsBGB.setTo(maxFloat);
 
 	if (isSecond)
 	{
@@ -1217,10 +1221,10 @@ vector<int> videoCutout::featureMatching(Mat &img_object, Mat &img_scene, Mat &o
 		minHessian = 100;
 	else
 		minHessian = 500;
-	SurfFeatureDetector detector(minHessian);
+	auto detector = SurfFeatureDetector::create(minHessian);
 	std::vector<KeyPoint> keypoints_object, keypoints_scene;
-	detector.detect(img_object, keypoints_object);
-	detector.detect(img_scene, keypoints_scene);
+	detector->detect(img_object, keypoints_object);
+	detector->detect(img_scene, keypoints_scene);
 
 	vector<KeyPoint>::iterator iter;
 	for (iter = keypoints_object.begin(); iter != keypoints_object.end();)
@@ -1241,10 +1245,10 @@ vector<int> videoCutout::featureMatching(Mat &img_object, Mat &img_scene, Mat &o
 	}
 
 	//-- Step 2: Calculate descriptors (feature vectors)
-	SurfDescriptorExtractor extractor;
+	auto extractor = SurfDescriptorExtractor::create();
 	Mat descriptors_object, descriptors_scene;
-	extractor.compute(img_object, keypoints_object, descriptors_object);
-	extractor.compute(img_scene, keypoints_scene, descriptors_scene);
+	extractor->compute(img_object, keypoints_object, descriptors_object);
+	extractor->compute(img_scene, keypoints_scene, descriptors_scene);
 
 	//-- Step 3: Matching descriptor vectors using FLANN matcher
 	FlannBasedMatcher matcher;
@@ -1535,7 +1539,7 @@ void videoCutout::levelset(Mat &result, bool useEdge)
 		// 			for (int x = 0; x < width; x++)
 		// 			{
 		// 				float tempDphi = dataTermEdge.at<float>(y, x) / maxNum;
-		// 
+		//
 		// 				if (tempDphi>0)
 		// 					colorMap.at<Vec3b>(y, x) = Vec3b(0, 0, tempDphi * 255);
 		// 				else
@@ -1640,7 +1644,8 @@ void videoCutout::levelset(Mat &result, bool useEdge)
 					Mat tarMask(Size(width, height), CV_8U, Scalar(0));
 					Mat tarRect = tarMask(Rect(xx, yy, preMask.cols, preMask.rows));
 					preMask.copyTo(tarRect);
-					memset(imageName, 0, sizeof(imageName)); sprintf(imageName, "%star_final_mask_%s.png", outputDir.c_str(), frameNum.c_str());
+					//memset(imageName, 0, sizeof(imageName)); sprintf(imageName, "%star_final_mask_%s.png", outputDir.c_str(), frameNum.c_str());
+					memset(imageName, 0, sizeof(imageName)); sprintf(imageName, "3.png");
 					imwrite(imageName, tarMask);
 
 					//tarMask.copyTo(result);
@@ -1661,11 +1666,11 @@ void videoCutout::levelset(Mat &result, bool useEdge)
 	// 	waitKey();
 }
 
-#define UNKNOWN_FLOW_THRESH2 1e9  
-// Color encoding of flow vectors from:  
-// http://members.shaw.ca/quadibloc/other/colint.htm  
-// This code is modified from:  
-// http://vision.middlebury.edu/flow/data/  
+#define UNKNOWN_FLOW_THRESH2 1e9
+// Color encoding of flow vectors from:
+// http://members.shaw.ca/quadibloc/other/colint.htm
+// This code is modified from:
+// http://vision.middlebury.edu/flow/data/
 void makecolorwheel2(vector<Scalar> &colorwheel)
 {
 	int RY = 15;
@@ -1694,10 +1699,10 @@ void motionToColor2(Mat flow, Mat &color)
 	if (colorwheel.empty())
 		makecolorwheel2(colorwheel);
 
-	// determine motion range:  
+	// determine motion range:
 	float maxrad = -1;
 
-	// Find max flow to normalize fx and fy  
+	// Find max flow to normalize fx and fy
 #pragma omp parallel for
 	for (int i = 0; i < flow.rows; ++i)
 	{
@@ -1735,7 +1740,7 @@ void motionToColor2(Mat flow, Mat &color)
 			int k0 = (int)fk;
 			int k1 = (k0 + 1) % colorwheel.size();
 			float f = fk - k0;
-			//f = 0; // uncomment to see original color wheel  
+			//f = 0; // uncomment to see original color wheel
 
 			for (int b = 0; b < 3; b++)
 			{
@@ -1743,9 +1748,9 @@ void motionToColor2(Mat flow, Mat &color)
 				float col1 = colorwheel[k1][b] / 255.0;
 				float col = (1 - f) * col0 + f * col1;
 				if (rad <= 1)
-					col = 1 - rad * (1 - col); // increase saturation with radius  
+					col = 1 - rad * (1 - col); // increase saturation with radius
 				else
-					col *= .75; // out of range  
+					col *= .75; // out of range
 				data[2 - b] = (int)(255.0 * col);
 			}
 		}
@@ -2421,7 +2426,7 @@ void videoCutout::EdgeClassifier(Mat &sourceImgBack, Mat &sourceMaskBack, Mat& s
 		// 		sourceFGPatchEdgeFront = imread("fgL_edge.png");
 		// 		sourceBGPatchEdgeFront = imread("bgL_edge.png");
 		// 		targetPatch = imread("imgM.jpg");
-		// 
+		//
 		// 		sourceFGPatchBack = imread("fgR_img.jpg");
 		// 		sourceFGMaskPatchBack = imread("fgR_mask.png", 0);
 		// 		sourceFGPatchEdgeBack = imread("fgR_edge.png", 0);

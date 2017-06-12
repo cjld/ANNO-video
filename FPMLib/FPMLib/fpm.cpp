@@ -17,7 +17,7 @@ IFPM::~IFPM()
 #include"fpmi.h"
 
 template<typename _SrcT, typename _DestT>
-void fpm_cd_imp(const char *pin, int width, int height, int istep, int istride,  
+void fpm_cd_imp(const char *pin, int width, int height, int istep, int istride,
 				   char *pout, int ostep, int ostride
 				   )
 {
@@ -39,13 +39,13 @@ void fpm_cd_imp(const char *pin, int width, int height, int istep, int istride,
 	}
 }
 
-void fpm_cvt_data(const void *pin, int width, int height, int istep, int istride, int itype, 
+void fpm_cvt_data(const void *pin, int width, int height, int istep, int istride, int itype,
 				   void *pout, int ostep, int ostride, int otype
 				   )
 {
 	assert(fpm_is_valid_type(itype)&&fpm_is_valid_type(otype));
 
-	typedef void (*FuncT)(const char *pin, int width, int height, int istep, int istride, 
+	typedef void (*FuncT)(const char *pin, int width, int height, int istep, int istride,
 				   char *pout, int ostep, int ostride
 				   );
 
@@ -54,7 +54,7 @@ void fpm_cvt_data(const void *pin, int width, int height, int istep, int istride
 	static FuncT s_ftab[][4]=
 	{
 		{fpm_cd_imp<uchar,uchar>,fpm_cd_imp<uchar,int>,fpm_cd_imp<uchar,float>,fpm_cd_imp<uchar,double>},
-		
+
 		{fpm_cd_imp<int,uchar> , fpm_cd_imp<int,int>,  fpm_cd_imp<int, float>, fpm_cd_imp<int, double>},
 
 		{fpm_cd_imp<float,uchar>,fpm_cd_imp<float,int>,fpm_cd_imp<float,float>, fpm_cd_imp<float,double>},
@@ -110,7 +110,7 @@ int fpm_ssd_select(const double *pssd, const unsigned char *pmask, int count, in
 				merr=pssd[i];
 			}
 		}
-		
+
 		if(ss<1e-6||nmax<=1)
 		{
 			pmatch[0]=mid; ret=1;
@@ -187,7 +187,7 @@ public:
 	}
 };
 
-void FPMMakePatMask(int iwidth, int iheight, int pwidth, int pheight, const unsigned char *pPixelMask, int xmstep, 
+void FPMMakePatMask(int iwidth, int iheight, int pwidth, int pheight, const unsigned char *pPixelMask, int xmstep,
 					unsigned char *pPatMask, int pmstep,unsigned char mval
 					)
 {
@@ -195,7 +195,8 @@ void FPMMakePatMask(int iwidth, int iheight, int pwidth, int pheight, const unsi
 	{
 		FVTImage pmask(iwidth,iheight,FI_8UC1);
 
-		for_each_pixel_1_1(pPixelMask,iwidth,iheight,xmstep,1,FI_AL_DSP(pmask),IOPThreshold<1,uchar,uchar>(1,0,1));
+		IOPThreshold<1,uchar,uchar> tmp(1,0,1);
+		for_each_pixel_1_1(pPixelMask,iwidth,iheight,xmstep,1,FI_AL_DSP(pmask), tmp);
 
 		FVTImage intbuf(iwidth+1,iheight+1,FI_32SC1),inti;
 		inti.AttachROI(intbuf,Rect(1,1,iwidth,iheight));
@@ -207,7 +208,8 @@ void FPMMakePatMask(int iwidth, int iheight, int pwidth, int pheight, const unsi
 		fiSetMem(np,0);
 		GetIntegralValue<1>(FI_AL_DWHSP_AS(inti,int),FI_AL_DSP_AS(np,int),pwidth,pheight);
 
-		for_each_pixel_1_1(np.DataAs<int>(), iwidth, iheight, iwidth, 1, pPatMask, pmstep,1,IOPThreshold<1,int,uchar>(pwidth*pheight,0,mval));
+		IOPThreshold<1,int,uchar> tmp2(pwidth*pheight,0,mval);
+		for_each_pixel_1_1(np.DataAs<int>(), iwidth, iheight, iwidth, 1, pPatMask, pmstep,1, tmp2);
 	}
 	else
 	{
@@ -216,4 +218,3 @@ void FPMMakePatMask(int iwidth, int iheight, int pwidth, int pheight, const unsi
 		fpm_set_mask(iwidth,iheight,pwidth,pheight,NULL,0,pmask,mval);
 	}
 }
-

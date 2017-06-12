@@ -1,14 +1,13 @@
 
 
 #include<cassert>
-#include<windows.h>
-#include<crtdbg.h>
 #include<string>
 
 #include "bfc/err.h"
 #include "bfc/mem.h"
 
 #include "bfc/cfg.h"
+#include <cstring>
 
 _FF_BEG
 
@@ -56,7 +55,7 @@ const char* CSException::GetMessage() const
 	return m_msg;
 }
 
-const char* CSException::what() const
+const char* CSException::what() const noexcept(true)
 {
 	return m_err;
 }
@@ -73,7 +72,7 @@ _FFS_API void  DefaultErrorHandler(int type, const char *err,const char *msg,con
 		{
 #ifdef _DEBUG
 			_CrtSetReportMode( _CRT_ERROR, _CRTDBG_MODE_WNDW );
-			
+
 			if(_CrtDbgReport(_CRT_ERROR,file,line,NULL,msg)==1)
 				__debugbreak(); //retry.
 #else
@@ -107,8 +106,18 @@ _FF_END
 
 using namespace ff;
 
+#include <iostream>
+
+using std::cerr;
+using std::endl;
+
 _FFS_API void  _FF_HandleError(int type, const char *err,const char *msg,const char* file,int line)
-{	
+{
+	cerr << "Error: " << err << endl;
+	cerr << "Message: " << msg << endl;
+	cerr << "File: " << file << endl;
+	cerr << "Line: " << line << endl;
+	/*
 	ff_mem mem;
 
 	if(err==ERR_WINAPI_FAILED && (!msg||msg[0]=='\0') )
@@ -116,7 +125,7 @@ _FFS_API void  _FF_HandleError(int type, const char *err,const char *msg,const c
 		const int BUF_SIZE=1024;
 
 		char *buf=(char*)ff_alloc(BUF_SIZE);
-		DWORD nsz=FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM,NULL,::GetLastError(),0,buf,BUF_SIZE,NULL);
+		size_t nsz=FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM,NULL,::GetLastError(),0,buf,BUF_SIZE,NULL);
 		buf[nsz]=0;
 
 		mem.set_mem(buf);
@@ -129,14 +138,21 @@ _FFS_API void  _FF_HandleError(int type, const char *err,const char *msg,const c
 //	OutputDebugStringA("\n***************\n");
 
 	_FF_NS(g_errorHandler)(type,err,msg,file,line);
+	*/
 }
 
 _FFS_API void  _FF_HandleError(int type, const char *err,const wchar_t *msg,const char* file,int line)
 {
+	cerr << "Error: " << err << endl;
+	cerr << "Message: " << msg << endl;
+	cerr << "File: " << file << endl;
+	cerr << "Line: " << line << endl;
+	/*
 	ff_mem mem;
 	char* amsg=ff_w2a(msg, mem);
 
 	_FF_HandleError(type,err,amsg,file,line);
+	*/
 }
 
 
@@ -157,4 +173,3 @@ extern _FFS_API  const char *ERR_FILE_WRITE_FAILED		="ERR_FILE_WRITE_FAILED";
 extern _FFS_API  const char *ERR_FILE_OP_FAILED			="ERR_FILE_OP_FAILED";
 
 extern _FFS_API  const char *ERR_WINAPI_FAILED			="ERR_WINAPI_FAILED";
-

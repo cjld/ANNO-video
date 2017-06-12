@@ -15,7 +15,7 @@ typedef unsigned long ulong;
 typedef uint	uint32;
 typedef int		int32;
 
-#endif 
+#endif
 
 #ifdef _UNICODE
 
@@ -54,10 +54,14 @@ typedef int		int32;
 
 #ifndef _FFS_STATIC
 
+#if defined(_MSC_VER)
 #ifdef FFS_EXPORTS
 #define _FFS_API __declspec(dllexport)
 #else
 #define _FFS_API __declspec(dllimport)
+#endif
+#else
+#define _FFS_API
 #endif
 
 #else
@@ -74,3 +78,4 @@ typedef int		int32;
 
 #endif
 
+#define m__cdecl

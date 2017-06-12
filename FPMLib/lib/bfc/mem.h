@@ -6,15 +6,17 @@
 
 struct _ff_debug_new;
 
+#include <cstdlib>
+using std::size_t;
+/*
+_FFS_API void* m__cdecl operator new (std::size_t size,const char *file,int line,_ff_debug_new *);
 
-_FFS_API void* __cdecl operator new (size_t size,const char *file,int line,_ff_debug_new *);
+_FFS_API void* m__cdecl operator new [] (std::size_t size,const char *file,int line,_ff_debug_new *);
 
-_FFS_API void* __cdecl operator new [] (size_t size,const char *file,int line,_ff_debug_new *);
+_FFS_API void m__cdecl operator delete(void* p,  const char *file, int line,_ff_debug_new *);
 
-_FFS_API void __cdecl operator delete(void* p,  const char *file, int line,_ff_debug_new *);
-
-_FFS_API void __cdecl operator delete[](void* p, const char *file, int line,_ff_debug_new *);
-
+_FFS_API void m__cdecl operator delete[](void* p, const char *file, int line,_ff_debug_new *);
+*/
 
 
 #ifdef _DEBUG
@@ -69,5 +71,3 @@ _FFS_API wchar_t* ff_a2w(const char *acs, ff_mem &mem);
 _FF_END
 
 #endif
-
-

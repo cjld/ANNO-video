@@ -205,7 +205,7 @@ inline RectT<_ValT> MergeRect(const RectT<_ValT> &rect0, const RectT<_ValT> &rec
 {
 	if(rect0.IsEmpty())
 		return rect1;
-	else 
+	else
 		if(rect1.IsEmpty())
 			return rect0;
 
@@ -218,15 +218,16 @@ inline RectT<_ValT> MergeRect(const RectT<_ValT> &rect0, const RectT<_ValT> &rec
 template<typename _ValT>
 inline RectT<_ValT> OverlappedRect(const RectT<_ValT> &rect0,const RectT<_ValT> &rect1)
 {
+	int x;
 	_ValT left=rect1.Left(),top=rect1.Top(),right=rect1.Right(),bottom=rect1.Bottom();
-	
+
 	_ValT y=rect0.Y();
 	if(y>top&&y<bottom)
 		top=y;
 	else
 		if(y>=bottom)
 			goto _OR_RECT_EMPTY;
-	
+
 	y=rect0.Bottom();
 	if(y>top&&y<bottom)
 		bottom=y;
@@ -234,10 +235,10 @@ inline RectT<_ValT> OverlappedRect(const RectT<_ValT> &rect0,const RectT<_ValT> 
 		if(y<=top)
 			goto _OR_RECT_EMPTY;
 
-	int x=rect0.X();
+	x=rect0.X();
 	if(x>left&&x<right)
 		left=x;
-	else 
+	else
 		if(x>=right)
 			goto _OR_RECT_EMPTY;
 	x=rect0.Right();
@@ -311,4 +312,3 @@ _FF_END
 
 
 #endif
-

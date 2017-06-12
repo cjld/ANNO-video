@@ -3,8 +3,12 @@
 #define _FF_BFC_CTC_H
 
 #include "bfc/fwd.h"
+#include <cmath>
 
-#include<limits>
+#include <limits>
+
+//#define CTCAssert(exp) static_assert(exp, "assert")
+#define CTCAssert(exp)
 
 #ifndef CTCAssert
 
@@ -27,7 +31,7 @@ struct compile_time_assertion_failed<true>
 #endif
 
 _FF_BEG
-	
+
 //To determine whether a type is class or struct, if it is not, it must be
 //compiler inner type such as int,float, enum, pointer or function.
 template<typename T>
@@ -49,7 +53,7 @@ class FlagType
 	enum{FLAG=flag};
 };
 
-//to test whether two types are equal, for example, to ensure two types T1 and T2 are the same 
+//to test whether two types are equal, for example, to ensure two types T1 and T2 are the same
 //in your program, you may write as follows:
 //		CTCAssert(TypeEqual<T1,T2>::Yes);
 
@@ -242,10 +246,10 @@ class AccumType
 	{
 		typedef _SrcT Type;
 	};
-	
-	CTC_TYPE_MAP(bool,int);  CTC_TYPE_MAP(char,int);  CTC_TYPE_MAP(short,int);  
 
-	CTC_TYPE_MAP(unsigned char,unsigned int);  CTC_TYPE_MAP(unsigned short,unsigned int); 
+	CTC_TYPE_MAP(bool,int);  CTC_TYPE_MAP(char,int);  CTC_TYPE_MAP(short,int);
+
+	CTC_TYPE_MAP(unsigned char,unsigned int);  CTC_TYPE_MAP(unsigned short,unsigned int);
 public:
 	typedef typename _type_map<void,_T>::Type RType;
 };
@@ -260,12 +264,12 @@ class DiffType
 	{
 		typedef _SrcT Type;
 	};
-	
-	CTC_TYPE_MAP(bool,char);  CTC_TYPE_MAP(char,short);  CTC_TYPE_MAP(short,int);  
 
-	CTC_TYPE_MAP(unsigned char,short);  CTC_TYPE_MAP(unsigned short,int); 
+	CTC_TYPE_MAP(bool,char);  CTC_TYPE_MAP(char,short);  CTC_TYPE_MAP(short,int);
 
-	CTC_TYPE_MAP(unsigned int,int);  CTC_TYPE_MAP(unsigned long,long);  CTC_TYPE_MAP(unsigned long long,long long);  
+	CTC_TYPE_MAP(unsigned char,short);  CTC_TYPE_MAP(unsigned short,int);
+
+	CTC_TYPE_MAP(unsigned int,int);  CTC_TYPE_MAP(unsigned long,long);  CTC_TYPE_MAP(unsigned long long,long long);
 public:
 	typedef typename _type_map<void,_T>::Type RType;
 };
@@ -294,16 +298,16 @@ class LargerType
 
 	_LARGER_TX(bool, char) ;   _LARGER_TX(bool, unsigned char); _LARGER_TX(char,unsigned char) ;
 
-	_LARGER_TX(short,unsigned short);  _LARGER_TX(int,unsigned int); 
-	
+	_LARGER_TX(short,unsigned short);  _LARGER_TX(int,unsigned int);
+
 	_LARGER_TX(int,float);		_LARGER_TX(unsigned int,float);
 
-	_LARGER_TX(long long,unsigned long long);  _LARGER_TX(long long,double);  
+	_LARGER_TX(long long,unsigned long long);  _LARGER_TX(long long,double);
 
 	_LARGER_TX(unsigned long long,double);
 
 #undef  _LARGER_TX
-	
+
 public:
 	typedef typename _larger<void,_T0,_T1>::Type RType;
 };
@@ -325,7 +329,7 @@ public:
 template<typename T>
 inline bool IsZero(T val,double torr=1e-6)
 {
-	return IsFloat<T>::Yes? fabs(double(val))<torr:val==0;
+	return IsFloat<T>::Yes? std::fabs(double(val))<torr:val==0;
 }
 
 template<typename T>
@@ -341,7 +345,7 @@ inline bool _CTCEqualTest(const T &v0,const T &v1,FlagType<false>,double)
 template<typename T>
 inline bool IsEqual(const T& v0,const T& v1,double torr=1e-6)
 {
-	return _CTCEqualTest(v0,v0,FlagType<IsFloat<T>::Yes>(),torr)
+	return _CTCEqualTest(v0,v0,FlagType<IsFloat<T>::Yes>(),torr);
 }
 
 template<typename _DestT,typename _SrcT>
@@ -367,7 +371,7 @@ class NLimits
 {
 	typedef std::numeric_limits<_Ty> _BaseT;
 public:
-	static _Ty  Max() 
+	static _Ty  Max()
 	{
 		return  _BaseT::max();
 	}
@@ -400,4 +404,3 @@ _FF_END
 
 
 #endif
-

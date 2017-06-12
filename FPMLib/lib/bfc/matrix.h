@@ -141,8 +141,8 @@ inline operator*(const SmallMatrix<_ValT, _NRows, _NCols>& left,
 }
 
 //V = M1*V1
-template<typename _ValT,int _NRows,int _NCols> 
-inline  Vector<_ValT,_NRows> 
+template<typename _ValT,int _NRows,int _NCols>
+inline  Vector<_ValT,_NRows>
 operator*(const SmallMatrix<_ValT,_NRows,_NCols>& m,
 		  const Vector<_ValT,_NCols>& av)
 {
@@ -155,8 +155,8 @@ operator*(const SmallMatrix<_ValT,_NRows,_NCols>& m,
 
 
 //V = V1*M1
-template<typename _ValT,int _NRows,int _NCols> 
-inline  Vector<_ValT,_NCols> 
+template<typename _ValT,int _NRows,int _NCols>
+inline  Vector<_ValT,_NCols>
 operator*(const Vector<_ValT,_NRows>& av,
 		  const SmallMatrix<_ValT,_NRows,_NCols>& m)
 {
@@ -181,16 +181,16 @@ operator*(const Vector<_ValT,_NRows>& av,
 //	CTCAssert(0);
 //}
 
-template<typename _ValT,int _NRows,int _NCols> 
-inline void 
-Transpose(SmallMatrix<_ValT,_NRows,_NCols> const& src, 
+template<typename _ValT,int _NRows,int _NCols>
+inline void
+Transpose(SmallMatrix<_ValT,_NRows,_NCols> const& src,
 		  SmallMatrix<_ValT,_NCols,_NRows>& dst)
-{	
+{
 	MatrixTranspose(&src(0,0), &dst(0,0), _NRows,_NCols);
 }
 
-template<typename _ValT,int _NRows,int _NCols> 
-inline SmallMatrix<_ValT,_NCols,_NRows> 
+template<typename _ValT,int _NRows,int _NCols>
+inline SmallMatrix<_ValT,_NCols,_NRows>
 Transpose(SmallMatrix<_ValT,_NRows,_NCols> const& m)
 {
 	SmallMatrix<_ValT,_NCols,_NRows> rm;
@@ -342,7 +342,7 @@ SmallMatrix<_ValT, _NRows, _NCols>::operator/=(_FacT f)
 //////////////////////////////////////////////////////////////////////////
 
 template<typename _ValT, int _Nx>
-inline SmallMatrix<_ValT, _Nx, _Nx>::SmallMatrix(_ValT val)
+inline SmallMatrix<_ValT, _Nx, _Nx>::SmallMatrix(_ValT vx)
 {
 	_PtrT pd = &(*this)(0,0);
 	for ( int i = 0; i < Size(); ++i)
@@ -456,7 +456,7 @@ inline _ValT SmallMatrix<_ValT, _Nx, _Nx>::Determine()const
 }
 
 template<typename _ValT, int _Nx>
-inline SmallMatrix<_ValT, _Nx, _Nx>& 
+inline SmallMatrix<_ValT, _Nx, _Nx>&
 SmallMatrix<_ValT, _Nx, _Nx>::Transpose()
 {
 	for (int i = 0; i < _Nx; ++i)
@@ -495,9 +495,9 @@ SmallMatrix<_ValT, _Nx, _Nx>::Reverse(bool *pOK)
 }
 
 template<typename _ValT, int _Nx>
-inline SmallMatrix<_ValT, _Nx, _Nx>& 
+inline SmallMatrix<_ValT, _Nx, _Nx>&
 SmallMatrix<_ValT, _Nx, _Nx>::SetIdentity()
-{		
+{
 	memset(this, 0, Size()*sizeof(_ValT));
 
 	for (int i = 0; i < _Nx; ++i)
@@ -547,14 +547,14 @@ inline void MakeRotateMatrix(SmallMatrix<_MatValT,3,3> &R,const Vector<_VecValT,
 
 	_MatValT sina=_MatValT(sin(angle));
 	_VecValT x=axis[0],y=axis[1],z=axis[2];
-	
+
 	_MatValT av[]={0,-z*sina,y*sina,z*sina,0,-x*sina,-y*sina,x*sina,0};
 	_MatValT rrt[]={x*x,x*y,x*z,y*x,y*y,y*z,z*x,z*y,z*z};
 
 	_MatValT *pr=&R[0][0];
 	cosa=1-cosa;
 	for(int i=0;i<9;++i)
-		pr[i]+=av[i]+rrt[i]*cosa;	
+		pr[i]+=av[i]+rrt[i]*cosa;
 }
 
 

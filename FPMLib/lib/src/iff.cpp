@@ -11,7 +11,7 @@ _IFF_BEG
 
 void *  fiAlloc(uint size)
 {
-	return ff_alloc(size);	
+	return ff_alloc(size);
 }
 uchar*  fiAllocImageData(const int step,const int height)
 {
@@ -29,12 +29,15 @@ void    fiFree(void* ptr)
 	ff_free(ptr);
 }
 
+bool _IFF_API fiIsValidAlign(const int align) {return true;}
+bool _IFF_API fiIsValidType(const int type) {return true;}
+bool _IFF_API fiIsValidDepth(const int depth) {return true;}
 //---------------------------------------------------------------------------------
 
 void  fiCopy(const FVTImage& src,FVTImage& dest,const int mode)
 {
 	assert(fiSizeEq(src,dest) && src.Type()==dest.Type());
-	
+
 	if(mode&FI_COPY_FLIP)
 		fiuFlipX(src.Data(),src.LineSize(),src.Height(),src.Step(),dest.Data(),dest.Step());
 	else
@@ -130,7 +133,7 @@ void  fiCopyChannels(const FVTImage& src, const int icBeg,const int icEnd,
 {
 	//dest.ResetIf(src.Width(),src.Height(),FI_MAKE_TYPE(src.Depth(),ocn));
 	assert(fiSizeEq(src,dest)&&uint(dest.NChannels()-ocBeg)<=uint(icEnd-icBeg));
-	
+
 	fiuCopyChannels(src.Data(),src.Width(),src.Height(),src.Step(),src.Type(),icBeg,icEnd,
 		dest.Data(),dest.Step(),dest.NChannels(),ocBeg);
 }
@@ -323,4 +326,3 @@ _IFF_END
 
 
 #endif
-

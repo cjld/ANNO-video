@@ -42,9 +42,9 @@ public:
 		return _fp!=0;
 	}
 	void Flush();
-	
+
 	void Close();
-	
+
 	operator bool() const
 	{
 		return IsGood();
@@ -74,7 +74,7 @@ protected:
 	void _open(const string_t& file,const char_t * mode);
 
 	void _read(void* buf,size_t sz,size_t count);
-	
+
 	void _write(const void* buf,size_t sz,size_t count);
 
 private:
@@ -115,9 +115,9 @@ public:
 	void Flush()
 	{
 	}
-	
+
 	void Close();
-	
+
 	operator bool() const
 	{
 		return IsGood();
@@ -141,7 +141,7 @@ public:
 	{
 		m_block_size=size;
 	}
-	int Get() 
+	int Get()
 	{
 		return m_pcur<m_peof? *m_pcur++:EOF;
 	}
@@ -150,7 +150,7 @@ public:
 		return this->Size()<=0;
 	}
 public:
-	
+
 	~BMemoryStreamBuffer();
 
 	BMemoryStreamBuffer();
@@ -172,7 +172,7 @@ protected:
 	}
 
 	void _read(void* buf,size_t sz,size_t count);
-	
+
 	void _write(const void* buf,size_t sz,size_t count);
 protected:
 	char		*m_pbuf,*m_pcur,*m_peof,*m_pend;
@@ -241,7 +241,7 @@ public:
 	//read a c-style string.
 	void ReadStr(std::string& str)
 	{
-		PosType pos(this->Tell());
+		BStreamBase::PosType pos(this->Tell());
 		size_t sz=this->ReadStr(0,0)+1;
 		if(sz>1)
 		{
@@ -252,7 +252,7 @@ public:
 		else
 			str.resize(0);
 	}
-	
+
 	void ReadStrAt(std::string& str,BStreamBase::PosType pos)
 	{
 		BStreamBase::PosType cur=this->Tell();
@@ -262,7 +262,7 @@ public:
 	}
 
 	template<typename _T>
-	_T Read() 
+	_T Read()
 	{
 		_T v;
 		this->Read(&v,sizeof(_T),1);
@@ -360,7 +360,7 @@ inline void BSRead(_IBST &is,Vector<_ValT,_N> &vec)
 template<typename _IBST,typename _CtrT>
 inline void _ibfs_read_ctr(_IBST& is,_CtrT& ctr)
 {
-	size_t size=is.Read<size_t>();
+	size_t size=is.Read();// TODO: ????
 	ctr.resize(size);
 	for(typename _CtrT::iterator itr(ctr.begin());itr!=ctr.end();++itr)
 		is>>*itr;
@@ -370,7 +370,7 @@ inline void BSRead(_IBST &is,std::vector<_ValT,_AllocT> &val)
 {
 	if(IsMemcpy<_ValT>::Yes)
 	{
-		size_t size=is.Read<size_t>();
+		size_t size=is.Read();
 		val.resize(size);
 		if(size!=0)
 			is.Read(&val[0],sizeof(_ValT),size);
@@ -381,12 +381,12 @@ inline void BSRead(_IBST &is,std::vector<_ValT,_AllocT> &val)
 template<typename _IBST,typename _MapT>
 inline void _ibfs_read_map(_IBST &is,_MapT &val)
 {
-	size_t size(is.Read<size_t>());
+	size_t size = is.Read();
 
 	typename _MapT::key_type key;
 	typedef typename _MapT::value_type::second_type _DataT;
 	_DataT data;
-	
+
 	for(size_t i=0;i<size;++i)
 	{
 		is>>key;
@@ -429,7 +429,7 @@ inline void BSRead(_IBST &is,std::pair<_FirstT,_SecondT>& pr)
 template<typename _BufferT,typename _T>
 inline IBStream<_BufferT>& operator>>(IBStream<_BufferT>& is,_T& val)
 {
-	BSRead(is,val);	
+	BSRead(is,val);
 	return is;
 }
 
@@ -438,7 +438,7 @@ inline IBStream<_BufferT>& operator>>(IBStream<_BufferT>& is,_T& val)
 template<typename _T>
 inline IBFStream& operator>>(IBFStream& is,_T& val)
 {
-	BSRead(is,val);	
+	BSRead(is,val);
 	return is;
 }
 
@@ -512,8 +512,8 @@ class _BFC_API OBMStream
 };
 
 template<typename _OBST,typename _ValT>
+inline void
 #if _MSC_VER>=1400
-inline void 
 __declspec(deprecated("Unsafe call to the output operator(<<) of _OBST!"))
 #endif
 _obfs_dist_unsafe(_OBST &os,const _ValT &val,FlagType<true>)
@@ -611,7 +611,7 @@ inline void BSWrite(_OBST &os,const std::pair<_FirstT,_SecondT>& pr)
 template<typename _BufferT,typename _T>
 inline OBStream<_BufferT>& operator<<(OBStream<_BufferT>& os,const _T& val)
 {
-	BSWrite(os,val);	
+	BSWrite(os,val);
 	return os;
 }
 
@@ -620,7 +620,7 @@ inline OBStream<_BufferT>& operator<<(OBStream<_BufferT>& os,const _T& val)
 template<typename _T>
 inline OBFStream& operator<<(OBFStream& os,const _T& val)
 {
-	BSWrite(os,val);	
+	BSWrite(os,val);
 	return os;
 }
 
@@ -632,9 +632,9 @@ class _BFC_API BFStream
 {
 public:
 	BFStream();
-	
+
 	BFStream(const string_t& FileName,bool bNew=true);
-	
+
 	using OBFStream::Open;
 
 	operator bool() const
@@ -698,7 +698,7 @@ size_t _BFC_API BFSCopy(IBFStream &ibs,BFStream::PosType ibeg,
 //		friend void BSWrite(fvt::OBFStream &obs,const class_name &v) \
 //		{ \
 //			obs<<out_seq; \
-//		} 
+//		}
 
 #define BFSRead  BSRead
 
@@ -714,7 +714,7 @@ size_t _BFC_API BFSCopy(IBFStream &ibs,BFStream::PosType ibeg,
 		friend void BSWrite(_OBST &obs,const class_name &v) \
 		{ \
 			obs<<out_seq; \
-		} 
+		}
 
 #define DEFINE_BFS_IO_1(class_name,m0) DEFINE_BFS_IO(class_name,v.m0,v.m0)
 
@@ -751,4 +751,3 @@ _FF_END
 
 
 #endif
-

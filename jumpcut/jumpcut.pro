@@ -31,21 +31,33 @@ HEADERS += \
     imgwarp_piecewiseaffine.h \
     videoCutout.h
 
+QMAKE_CXXFLAGS += -std=c++11
 
 OTHER_FILES += cuda.cu
 #CUDA_SOURCES += cuda.cu
 
-INCLUDEPATH += "C:/ProgramData/NVIDIA Corporation/CUDA Samples/v7.5/common/inc"
-CUDA_SDK = 'C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v7.5/'   # Path to cuda SDK install
-CUDA_DIR = 'C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v7.5/'            # Path to cuda toolkit install
-
 # DO NOT EDIT BEYOND THIS UNLESS YOU KNOW WHAT YOU ARE DOING....
+win32 {
+    INCLUDEPATH += "C:/ProgramData/NVIDIA Corporation/CUDA Samples/v7.5/common/inc"
+    CUDA_SDK = 'C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v7.5/'   # Path to cuda SDK install
+    CUDA_DIR = 'C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v7.5/'            # Path to cuda toolkit install
+    SYSTEM_NAME = Win64         # Depending on your system either 'Win32', 'x64', or 'Win64'
+    SYSTEM_TYPE = 64            # '32' or '64', depending on your system
+    CUDA_ARCH = sm_21           # Type of CUDA architecture, for example 'compute_10', 'compute_11', 'sm_10'
+    NVCC_OPTIONS = --use_fast_math
+    NVCC_OPTIONS += -ccbin "\"D:/Program Files (x86)/Microsoft Visual Studio 12.0/VC/bin/x86_amd64/cl.exe\"" -Xcompiler "\"/EHsc /W3 /nologo /O2 /Zi  /MD \""
+} else {
+    INCLUDEPATH += "/usr/local/cuda-8.0/samples/common/inc/"
 
-SYSTEM_NAME = Win64         # Depending on your system either 'Win32', 'x64', or 'Win64'
-SYSTEM_TYPE = 64            # '32' or '64', depending on your system
-CUDA_ARCH = sm_21           # Type of CUDA architecture, for example 'compute_10', 'compute_11', 'sm_10'
-NVCC_OPTIONS = --use_fast_math
-
+    CUDA_SDK = '/usr/local/cuda-8.0/'   # Path to cuda SDK install
+    CUDA_DIR = '/usr/local/cuda-8.0/'            # Path to cuda toolkit install
+    SYSTEM_NAME = Linux         # Depending on your system either 'Win32', 'x64', or 'Win64'
+    SYSTEM_TYPE = 64            # '32' or '64', depending on your system
+    CUDA_ARCH = sm_21           # Type of CUDA architecture, for example 'compute_10', 'compute_11', 'sm_10'
+    NVCC_OPTIONS = --use_fast_math
+    NVCC_OPTIONS += -Xcompiler "\"-O2\""
+}
+CUDA_DIR = '/usr/local/cuda-8.0/'            # Path to cuda toolkit install
 
 # include paths
 INCLUDEPATH += $$CUDA_DIR/include
@@ -64,7 +76,6 @@ CUDA_INC = $$join(INCLUDEPATH,'" -I"','-I"','"')
 #LIBS += $$join(CUDA_LIBS,'.so ', '', '.so')
 LIBS += $$CUDA_LIBS
 
-NVCC_OPTIONS += -ccbin "\"D:/Program Files (x86)/Microsoft Visual Studio 12.0/VC/bin/x86_amd64/cl.exe\"" -Xcompiler "\"/EHsc /W3 /nologo /O2 /Zi  /MD \""
 
 # Configuration of the Cuda compiler
 CONFIG(debug, debug|release) {
@@ -84,17 +95,17 @@ else {
     QMAKE_EXTRA_COMPILERS += cuda
 }
 
-linux {
-        QMAKE_CXXFLAGS += -fpermissive
-        QMAKE_CXX = g++-5
-        LIBS += -L/usr/local/lib/ -lopencv_stitching -lopencv_objdetect -lopencv_superres -lopencv_videostab -lopencv_calib3d -lopencv_features2d -lopencv_highgui -lopencv_video -lopencv_photo -lopencv_ml -lopencv_imgproc -lopencv_flann -lopencv_core -lopencv_imgcodecs
-
-}
-
 win32 {
         LIBS += -LD:\OpenCV2.4\opencv\build\x64\vc12\lib -lopencv_core2410 -lopencv_imgproc2410 -lopencv_highgui2410 -lopencv_calib3d2410 \
 -lopencv_contrib2410 -lopencv_core2410 -lopencv_features2d2410 -lopencv_flann2410 -lopencv_gpu2410 -lopencv_highgui2410 -lopencv_imgproc2410 -lopencv_legacy2410 -lopencv_ml2410 -lopencv_nonfree2410 -lopencv_objdetect2410 -lopencv_ocl2410 -lopencv_photo2410 -lopencv_stitching2410 -lopencv_superres2410 -lopencv_ts2410 -lopencv_video2410 -lopencv_videostab2410
         INCLUDEPATH += D:\OpenCV2.4\opencv\build\include\opencv
         INCLUDEPATH += D:\OpenCV2.4\opencv\build\include
         LIBS += -L..\build-FPMLib-Desktop_Qt_5_6_2_MSVC2013_64bit-Release\release -lFPMLib
+} else {
+        INCLUDEPATH += /usr/local/include/opencv/
+        INCLUDEPATH += /usr/local/include/
+        #QMAKE_CXXFLAGS += -fpermissive
+        #QMAKE_CXX = g++-5
+        LIBS += -L/usr/local/lib/ -lopencv_stitching -lopencv_objdetect -lopencv_superres -lopencv_videostab -lopencv_calib3d -lopencv_features2d -lopencv_highgui -lopencv_video -lopencv_photo -lopencv_ml -lopencv_imgproc -lopencv_flann -lopencv_core -lopencv_imgcodecs -lopencv_xfeatures2d -lopencv_ximgproc
+        LIBS += -L../FPMLib -lFPMLib -L/usr/lib/x86_64-linux-gnu/ -lfftw3f -lfftw3
 }

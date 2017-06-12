@@ -28,7 +28,7 @@ struct fft_data
 
 	double    *pinx;
 	cdata_t  *poutx;
-	
+
 	int		 w,W,h,H;
 };
 
@@ -48,7 +48,7 @@ fft_data* fft_create(int w, int W, int h, int H, double *pin, cdata_t *pout)
 	memset(pfft->parr,0,W*hH*sizeof(cdata_t));
 
 	pfft->p1=fftw_plan_dft_r2c_1d(H,pfft->prin,pfft->prout,FFTW_MEASURE);
-	
+
 	int n2[]={W,H};
 
 	pfft->p2=fftw_plan_many_dft(1,n2,hH,pfft->parr,NULL,1,W,pout,NULL,1,W,FFTW_FORWARD,FFTW_MEASURE|FFTW_PRESERVE_INPUT);
@@ -413,19 +413,21 @@ public:
 
 	std::vector<double>  m_wpat;
 	FVTImage m_rbuf, m_wpbuf;
-	
+
 public:
 	void PlanPatch(int pwidth, int pheight)
 	{
 		if(pwidth!=m_pw || pheight!=m_ph)
 		{
-			m_pfft.reset(pwidth,m_iw,pheight,m_ih);			
+			m_pfft.reset(pwidth,m_iw,pheight,m_ih);
 			m_wpat.resize(pwidth*pheight*m_dim);
 
 			uchar mv=0;
 			m_mask=m_mask0;
-			for_boundary_pixel_0_1(FI_AL_DWHSP(m_mask),bind_i0(&mv,iop_copy<1>()),0,pheight,0,pwidth);
-			
+			iop_copy<1> tmp(0);
+			auto tmp2 = bind_i0(&mv,tmp);
+			for_boundary_pixel_0_1(FI_AL_DWHSP(m_mask),tmp2,0,pheight,0,pwidth);
+
 			m_pw=pwidth; m_ph=pheight;
 		}
 	}
@@ -466,11 +468,14 @@ public:
 		double scale=1.0/(m_iw*m_ih);
 
 		//fiuForPixels_1_1(pix,m_iw,m_ih,sizeof(double)*m_dim*m_iw,sizeof(double)*m_dim,pix2,sizeof(double)*m_iw,sizeof(double),IOPVSquare(m_dim));
-		ff::for_each_pixel_1_1(pix,m_iw,m_ih,m_dim*m_iw,m_dim,pix2,m_iw,1,IOPVSquare(m_dim));
+		IOPVSquare tmp(m_dim);
+		ff::for_each_pixel_1_1(pix,m_iw,m_ih,m_dim*m_iw,m_dim,pix2,m_iw,1,tmp);
 
 		if(m_flag&FPMF_WEIGHTED)
 		{
-			for_each_pixel_0_1(pix2,m_iw,m_ih,m_iw,1,inplace_i0(iop_scale<1,double>(scale)));
+			iop_scale<1,double> tmp2(scale, 0);
+			auto tmp3 = inplace_i0(tmp2);
+			for_each_pixel_0_1(pix2,m_iw,m_ih,m_iw,1,tmp3);
 
 			const cdata_t *pres=m_ifft.exec(pix2,sizeof(double)*m_iw,sizeof(double),FPMT_64F);
 
@@ -495,7 +500,9 @@ public:
 		}
 #endif
 
-		for_each_pixel_0_1(pix,m_iw*m_dim,m_ih,m_dim*m_iw,1,inplace_i0(iop_scale<1,double>(2.0f*scale)));
+		iop_scale<1,double> tmp4(2.0f*scale);
+		auto tmp5 = inplace_i0(tmp4);
+		for_each_pixel_0_1(pix,m_iw*m_dim,m_ih,m_dim*m_iw,1,tmp5);
 
 		for(int i=0;i<m_dim;++i)
 		{
@@ -583,8 +590,13 @@ public:
 
 			assert(pwssd==m_rfft_roi.DataAs<double>());
 
-		//	for_each_pixel_1_1(FI_AL_DWHSP_AS(m_i2roi,double),FI_AL_DSP_AS(m_rfft_roi,double),inplace_i1(iop_sub<1>()));
-			for_each_pixel_1_1(m_i2roi.DataAs<double>(), m_i2roi.Width(), m_i2roi.Height(), m_i2roi.Width()*m_i2roi.NChannels(), m_i2roi.NChannels(), m_rfft_roi.DataAs<double>(), m_rfft_roi.Width()*m_rfft_roi.NChannels(),m_rfft_roi.NChannels(),inplace_i1(iop_sub<1>()));
+			iop_sub<1> tmp6(0);
+			auto tmp7 = inplace_i1(tmp6);
+			//int a=0,b=1;
+			//tmp7(&a,&b);
+			//tmp6(&a,&a,&b);
+			//for_each_pixel_1_1(FI_AL_DWHSP_AS(m_i2roi,double),FI_AL_DSP_AS(m_rfft_roi,double),inplace_i1(iop_sub<1>()));
+			for_each_pixel_1_1(m_i2roi.DataAs<double>(), m_i2roi.Width(), m_i2roi.Height(), m_i2roi.Width()*m_i2roi.NChannels(), m_i2roi.NChannels(), m_rfft_roi.DataAs<double>(), m_rfft_roi.Width()*m_rfft_roi.NChannels(),m_rfft_roi.NChannels(),tmp7);
 		}
 
 		return (double*)pwssd;
@@ -653,10 +665,3 @@ int FPM_FFT::Match(const void *pat, int pwidth, int pheight, int pstep, int ptyp
 	}
 	return m_pImp->Match(pat, pwidth, pheight, pstep,ptype,weight,pmatch,pssd,nmax,flag);
 }
-
-
-
-
-
-
-
